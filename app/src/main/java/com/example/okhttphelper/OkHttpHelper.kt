@@ -117,4 +117,48 @@ object OkHttpHelper {
             }
         })
     }
+    // 异步 PUT 请求
+    fun <T, R> put(url: String, requestBodyObj: T, responseType: Type, onSuccess: (R) -> Unit, onFailure: (String) -> Unit) {
+        val json = gson.toJson(requestBodyObj)
+        val body = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), json)
+        val request = Request.Builder()
+            .url(url)
+            .put(body)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                onFailure(e.message ?: "Unknown Error")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.let { responseBody ->
+                    val json = responseBody.string()
+                    val parsedObject: R = gson.fromJson(json, responseType)
+                    onSuccess(parsedObject)
+                } ?: onFailure("Response body is null")
+            }
+        })
+    }
+    // 异步 DELETE 请求
+    fun <T> delete(url: String, responseType: Type, onSuccess: (T) -> Unit, onFailure: (String) -> Unit) {
+        val request = Request.Builder()
+            .url(url)
+            .delete()
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                onFailure(e.message ?: "Unknown Error")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.let { responseBody ->
+                    val json = responseBody.string()
+                    val parsedObject: T = gson.fromJson(json, responseType)
+                    onSuccess(parsedObject)
+                } ?: onFailure("Response body is null")
+            }
+        })
+    }
 }
