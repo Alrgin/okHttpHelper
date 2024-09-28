@@ -322,4 +322,24 @@ object OkHttpHelper {
     fun closeWebSocket(webSocket: WebSocket, code: Int = 1000, reason: String = "Normal closure") {
         webSocket.close(code, reason)
     }
+
+    /**
+     * 利用OkHttp的连接复用池，预连接以提高网络请求效率
+     * 初步构想闪屏页面预请求首页数据
+     */
+    fun preRequest(url: String){
+        val request = Request.Builder()
+            .url(url)
+            .head()
+            .build()
+        client.newCall(request).enqueue(object : Callback{
+            override fun onResponse(call: Call, response: Response) {
+                //预连接成功与否不需关心
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+                //预连接成功与否不需关心
+            }
+        })
+    }
 }
