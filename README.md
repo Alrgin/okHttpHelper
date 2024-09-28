@@ -218,3 +218,14 @@ OkHttpHelper.post(
     }
 )
 ```
+# EventBusHelper
+```
+//这一步之后不必再使用register和unregister
+//自动监听onStar和onStop进行注册和解注册
+lifecycle.addObserver(EventBusLifecycleObserver(this))
+        EventBusHelper.register(this)
+        EventBusHelper.unregister(this)
+        EventBusHelper.post("此处应是自定义的Event类")
+        EventBusHelper.postSticky("此处应是自定义的Event类")
+        EventBusHelper.removeStickyEvent()
+```
