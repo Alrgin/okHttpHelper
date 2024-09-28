@@ -125,7 +125,48 @@ OkHttpHelper.delete(
     }
 )
 ```
-
+### 5. 上传文件
+```
+// 调用 OkHttpHelper 中的 uploadGzipFile 方法
+    OkHttpHelper.uploadGzipFile(
+        description = description,
+        url = uploadUrl,
+        file = file,
+        responseType = responseType,
+        onSuccess = { response ->
+            // 上传成功的处理逻辑
+            println("Upload Successful: $response")
+        },
+        onFailure = { error ->
+            // 上传失败的处理逻辑
+            println("Upload Failed: $error")
+        }
+    )
+```
+### 连接WebSocket
+```
+// 连接 WebSocket
+    OkHttpHelper.connectWebSocket(
+        url,
+        onOpen = { webSocket ->
+            println("WebSocket connected")
+            // 可以通过 webSocket.send() 发送消息
+            webSocket.send("Hello Server!")
+        },
+        onMessage = { message ->
+            println("Received message: $message")
+        },
+        onFailure = { error ->
+            println("WebSocket error: $error")
+        },
+        onClosing = { code, reason ->
+            println("WebSocket is closing: Code: $code, Reason: $reason")
+        },
+        onClosed = { code, reason ->
+            println("WebSocket closed: Code: $code, Reason: $reason")
+        }
+    )
+```
 ## 常见问题
 
 ### 1. 如何处理 JSON 响应？
